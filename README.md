@@ -8,7 +8,8 @@
 [![R-CMD-check](https://github.com/tomorrowgaarusa/mypkg_takashi/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tomorrowgaarusa/mypkg_takashi/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of mypkgr is to master the Rsutdio and git ! takashi added
+The goal of mypkgr is to master the Rsutdio and git ! I cloned it into
+/home/nodapai/mypkgr on Ubuntsu and /Documents/mypkgr on Macs
 
 ## Installation
 
@@ -23,6 +24,10 @@ pak::pak("tomorrowgaarusa/mypkg_takashi")
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
+Hello. This is git practice from takashi and This helps researchers keep
+track on their workflow
+
+> > > > > > > c473fa838570f11b78407274028f12f65b594750
 
 ``` r
 x <- c(3, 4)
