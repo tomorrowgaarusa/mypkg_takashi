@@ -23,6 +23,7 @@ pak::pak("tomorrowgaarusa/mypkg_takashi")
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
+This helps researchers keep track on their workflow
 
 ``` r
 x <- c(3, 4)
