@@ -8,7 +8,7 @@
 [![R-CMD-check](https://github.com/tomorrowgaarusa/mypkg_takashi/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tomorrowgaarusa/mypkg_takashi/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of mypkgr is to master the Rsutdio and git !
+The goal of mypkgr is to master the Rsutdio and git ! takashi added
 
 ## Installation
 
@@ -33,8 +33,7 @@ print(z)
 ## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+<!-- What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so: -->
 
 ``` r
 summary(cars)
