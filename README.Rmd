@@ -33,7 +33,9 @@ pak::pak("tomorrowgaarusa/mypkg_takashi")
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
-Hello. This is git practice from takashi
+Hello. This is git practice from takashi and This helps researchers keep track on their workflow
+
+>>>>>>> c473fa838570f11b78407274028f12f65b594750
 ```{r example}
 x <- c(3, 4)
 y <- c(2, 3)
