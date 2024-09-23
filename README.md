@@ -23,6 +23,7 @@ pak::pak("tomorrowgaarusa/mypkg_takashi")
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
+Hello. This is git practice from takashi
 
 ``` r
 x <- c(3, 4)
