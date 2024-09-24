@@ -149,5 +149,17 @@ pchisq(X2, df = 1, lower.tail = FALSE)
 pchisq(score_T, df = 1, lower.tail = FALSE)
 pchisq(L, df = 1, lower.tail = FALSE)
 
+(AIC <- 2*1 - 2*compute_likelihoods(p, log = TRUE))
+# 95% confidence interval
+p + c(-1, 1) * 1.96 * sqrt(( p*(1-p) ) / n)
+
+logit <- function(x=0.5){log( x / (1-x))}
+expit <- function(x=0.5){exp(x) / (1+exp(x))}
+
+my_logistic_reg <- glm(low~1, data=df, family = "binomial")
+summary(my_logistic_reg)
+expit(my_logistic_reg$coefficients)
+
+
 ```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
