@@ -18,17 +18,108 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r cars}
 install.packages("animation")
 library("animation")
+install.packages("psych")
+library(psych)
+
 
 newton.method(FUN = function(x) (x - 2)^2 - 1, init = 9.5, rg = c(-1, 10), tol = 0.001,
 interact = FALSE, col.lp = c("orange", "red3", "dodgerblue1"), lwd=1.5)
 ```
 
-## Including Plots
+## log function
 
+```{r, echo=FALSE}
+mylog <- function(a, b){
+  loga <- log(a)
+  logb <- log(b)
+  browser()
+  ans <- loga + logb
+  return(ans)
+}
+
+mylog(1, -1)
+
+```
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r, echo=FALSE}
+df <- read.csv("birthweight_data.txt",header = TRUE, sep = "")
+head(df)
+summary(df)
+describe(df)
+
 ```
 
+## log function
+
+```{r, echo=FALSE}
+
+k = sum(df$low)
+n = length(df$low)
+p = 0.9999
+print(p)
+
+compute_likelihoods <- function(p, obs=df$low, k=sum(obs), n = length(obs), log=FALSE){
+  likelihood = p^k * (1 - p)^(n - k)
+  if (log == FALSE) {
+    return(likelihood)
+  } else {
+    return( k * log(p) + (n - k) * log(1 - p) )
+  }
+}
+
+compute_likelihoods(p=k/n, obs=df$low, log=TRUE)
+
+
+first_derivative <- function(p, obs=df$low, k=sum(obs), n=length(obs)){
+  deriv <- (k / p) - ((n - k) / (1 - p))
+  return(deriv)
+}
+
+first_derivative(p=k/n, obs=df$low)
+
+second_derivative <- function(p, obs=df$low, k=sum(obs), n=length(obs)){
+  deriv <- ((-1)*k / p^2) - ((n - k) / (1-p)^2 )
+  return(deriv)
+}
+
+second_derivative(p=k/n, obs=df$low)
+
+```
+
+
+```{r, echo=FALSE}
+install.packages("patchwork")
+library(ggplot2)
+library(patchwork)
+
+base_p <- ggplot() + xlim(0,1) +
+  geom_vline(xintercept = mean(df$low), col="red") + theme_bw() + xlab("p")
+pl <- base_p + geom_function(fun=compute_likelihoods, n=1000)
+pll <- base_p + geom_function(fun=compute_likelihoods, n=1000, args=list(log=TRUE))
+pll1 <- base_p + geom_function(fun=first_derivative, n=1000)
+pll2 <- base_p + geom_function(fun=second_derivative, n=1000)
+(pl + pll) / (pll1 + pll2)
+
+```
+```{r, echo=FALSE}
+
+newton <- function(p0=0.5, f, fprime, Nmax=100, epsilon=0.00001){
+  xnew <- p0
+  diff <- epsilon + 1
+  iter <- 0
+  while (iter < Nmax & diff > epsilon) {
+    iter <- iter + 1
+    xcurrent <- xnew
+    xnew <- xcurrent - (f(xcurrent) / fprime(xcurrent))
+    diff <- abs(xnew - xcurrent)
+    print(paste("xnew is", xnew, "diff is", diff))
+  }
+  return(list("xnew" = xnew, "iter" = iter))
+}
+
+p=0.9999
+newton(p0=0.5, f=first_derivative, fprime=second_derivative, Nmax=100, epsilon=1e-10)
+
+```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
