@@ -118,8 +118,36 @@ newton <- function(p0=0.5, f, fprime, Nmax=100, epsilon=0.00001){
   return(list("xnew" = xnew, "iter" = iter))
 }
 
-p=0.9999
-newton(p0=0.5, f=first_derivative, fprime=second_derivative, Nmax=100, epsilon=1e-10)
+p=0.99999999
+newton(p0=0.9999999, f=first_derivative, fprime=second_derivative, Nmax=100, epsilon=1e-10)
+
+```
+Wald, score and likelihood ratio tests
+
+```{r, echo=FALSE}
+
+estimator <- newton(p0=0.9999999, f=first_derivative, fprime=second_derivative, Nmax=100, epsilon=1e-10)
+print(estimator$xnew)
+
+p <- estimator$xnew
+
+# Wald test
+X2 <- (p-0.5)^2 / (p*(1-p) / n) 
+
+# Score T test
+score_T <- n * (p/0.5 - (1-p)/(1-0.5))^2 * 0.5 * (1-0.5)
+
+# Likelihood ratio test
+L <- 2 * (compute_likelihoods(p, log = TRUE) - compute_likelihoods(0.5, log = TRUE))
+print(paste("Wald X2 is", X2, "Score T is", score_T, "Likelihood test L is", L))
+
+p=0.99999999
+newton(p0=0.9999999, f=first_derivative, fprime=second_derivative, Nmax=100, epsilon=1e-10)
+
+# All the test statistics follow the  chi-squared distribution.
+pchisq(X2, df = 1, lower.tail = FALSE)
+pchisq(score_T, df = 1, lower.tail = FALSE)
+pchisq(L, df = 1, lower.tail = FALSE)
 
 ```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
