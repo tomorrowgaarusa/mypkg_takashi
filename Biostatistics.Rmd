@@ -23,7 +23,7 @@ library(psych)
 # install.packages("tidyverse")
 library(tidyverse)
 install.packages("corrplot")
-
+library(broom)
 
 newton.method(FUN = function(x) (x - 2)^2 - 1, init = 9.5, rg = c(-1, 10), tol = 0.001,
 interact = FALSE, col.lp = c("orange", "red3", "dodgerblue1"), lwd=1.5)
@@ -210,11 +210,16 @@ summary(model2)
 model2$coefficients
 
 
+# check the linearily
+plot(model1$fitted.values, residuals(model1))
+
+# Check Homoskedasticity
+# Check Normality
+hist(df$bwt)
+hist(residuals(model1))
 
 
-library(psych)
-df_for_corrplot <- df %>% select(age, lwt, ptl, ftv, bwt)
-psych::pairs.panels(df_for_corrplot)
+
 
 model_test <- lm(bwt ~ lwt + age, data = df)
 summary(model_test)
@@ -223,6 +228,47 @@ summary(model_test)
 
 
 ```{r, echo=FALSE}
+# Multiple linear Analysis
+df_for_corrplot <- df %>% select(lwt, race, smoke, ptl, ht, ui, bwt)
+psych::pairs.panels(df_for_corrplot)
+pairs.panels(df)
+
+str(df)
+
+df_mutate <- df %>% mutate(
+  low = factor(low, levels = c(1, 0), labels = c("Yes", "No")),
+  race = factor(race, levels = c(1, 2, 3), labels = c("White", "Black", "Other")),
+  ptl = factor(ptl, levels = c(1, 0), labels = c("Yes", "No")),
+  ht = factor(ht, levels = c(1, 0), labels = c("Yes", "No")),
+  ui = factor(ui, levels = c(1, 0), labels = c("Yes", "No"))
+)
+
+df_centerised <- df_mutate
+df_centerised$age <- df_centerised$age - mean(df_centerised$age)
+df_centerised$lwt <- df_centerised$lwt - mean(df_centerised$lwt)
+df_centerised$bwt <- df_centerised$bwt - mean(df_centerised$bwt)
+
+
+pairs.panels(df)
+pairs.panels(df_centerised)
+
+
+model_multi <- lm(bwt ~ ., data = df_centerised)
+summary(model_multi)
+
+broom::glance(model_multi)
+
+
+
+model_multi_2 <- lm(bwt ~ low + race + smoke + ui, data = df_centerised)
+summary(model_multi_2)
+broom::glance(model_multi_2)
+
+
+
+model_multi_3 <- lm(bwt ~ low + race + smoke + ui, data = df_centerised)
+summary(model_multi_3)
+broom::glance(model_multi_3)
 
 
 
