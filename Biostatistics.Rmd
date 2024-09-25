@@ -20,8 +20,9 @@ When you click the **Knit** button a document will be generated that includes bo
 library("animation")
 #install.packages("psych")
 library(psych)
-install.packages("tidyverse")
+# install.packages("tidyverse")
 library(tidyverse)
+install.packages("corrplot")
 
 
 newton.method(FUN = function(x) (x - 2)^2 - 1, init = 9.5, rg = c(-1, 10), tol = 0.001,
@@ -165,6 +166,65 @@ summary(my_logistic_reg)
 expit(my_logistic_reg$coefficients)
 
 mean(df$low)
+
+```
+```{r, echo=FALSE}
+# summarise the statistics for each value of mother's age
+df_summary <-
+  df %>% select(age, lwt, ptl, ftv, bwt) %>%
+  group_by(age) %>%
+  add_tally() %>% 
+  summarise_all(.funs=list("mean"=mean, "se"=sd)) %>% 
+  rename(n = "n_mean") %>%
+  select(-n_se)
+df_summary
+knitr::kable(df_summary)
+
+# draw a scatter plot with ggplot2 from non-aggregated initial data
+ggplot(df, aes(x = age, y = bwt)) +
+  geom_point() +
+  geom_smooth(method = "lm", model = model1, col = "gray",se = FALSE) + 
+  labs(
+    title = "Birth Weight vs. Mother's Age",
+    x = "Mother's Age",
+    y = "Birth Weight"
+  )
+# draw a scatter plot with ggplot2 of average birth weight as a function of the mother's age
+ggplot(df_summary, aes(x = age, y = bwt_mean)) +
+  geom_point() +
+  geom_smooth(method = "lm", model = model2, col = "red", se = FALSE) + 
+  labs(
+    title = "Average Birth Weight vs. Mother's Age",
+    x = "Mother's Age",
+    y = "Average Birth Weight"
+  )
+
+help(lm)
+?lm
+model1 <- lm(bwt ~ age, data = df)
+summary(model1)
+
+?ls
+model2 <- lm(bwt_mean ~ age, data = df_summary)
+summary(model2)
+model2$coefficients
+
+
+
+
+library(psych)
+df_for_corrplot <- df %>% select(age, lwt, ptl, ftv, bwt)
+psych::pairs.panels(df_for_corrplot)
+
+model_test <- lm(bwt ~ lwt + age, data = df)
+summary(model_test)
+
+```
+
+
+```{r, echo=FALSE}
+
+
 
 ```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
