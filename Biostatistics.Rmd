@@ -20,6 +20,8 @@ When you click the **Knit** button a document will be generated that includes bo
 library("animation")
 #install.packages("psych")
 library(psych)
+install.packages("tidyverse")
+library(tidyverse)
 
 
 newton.method(FUN = function(x) (x - 2)^2 - 1, init = 9.5, rg = c(-1, 10), tol = 0.001,
@@ -150,6 +152,8 @@ pchisq(score_T, df = 1, lower.tail = FALSE)
 pchisq(L, df = 1, lower.tail = FALSE)
 
 (AIC <- 2*1 - 2*compute_likelihoods(p, log = TRUE))
+(AIC <- 2*1 - 2*compute_likelihoods(0.5, log = TRUE))
+
 # 95% confidence interval
 p + c(-1, 1) * 1.96 * sqrt(( p*(1-p) ) / n)
 
@@ -160,6 +164,7 @@ my_logistic_reg <- glm(low~1, data=df, family = "binomial")
 summary(my_logistic_reg)
 expit(my_logistic_reg$coefficients)
 
+mean(df$low)
 
 ```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
