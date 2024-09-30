@@ -236,11 +236,12 @@ pairs.panels(df)
 str(df)
 
 df_mutate <- df %>% mutate(
-  low = factor(low, levels = c(1, 0), labels = c("Yes", "No")),
+  low = factor(low, levels = c(1, 0)),
   race = factor(race, levels = c(1, 2, 3), labels = c("White", "Black", "Other")),
   ptl = factor(ptl, levels = c(1, 0), labels = c("Yes", "No")),
   ht = factor(ht, levels = c(1, 0), labels = c("Yes", "No")),
-  ui = factor(ui, levels = c(1, 0), labels = c("Yes", "No"))
+  ui = factor(ui, levels = c(1, 0), labels = c("Yes", "No")),
+  smoke = factor(smoke, levels = c(1, 0), labels = c("Yes", "No"))
 )
 
 df_centerised <- df_mutate
@@ -259,7 +260,6 @@ summary(model_multi)
 broom::glance(model_multi)
 
 
-
 model_multi_2 <- lm(bwt ~ low + race + smoke + ui, data = df_centerised)
 summary(model_multi_2)
 broom::glance(model_multi_2)
@@ -270,7 +270,61 @@ model_multi_3 <- lm(bwt ~ low + race + smoke + ui, data = df_centerised)
 summary(model_multi_3)
 broom::glance(model_multi_3)
 
+```
 
+```{r, echo=FALSE}
+# Logistic Regression Analysis
+
+pairs.panels(df_centerised)
+model_logreg <- glm(low ~ lwt + race + smoke + ui, data = df_centerised, family = "binomial")
+summary(model_logreg)
+
+str(df_centerised)
+df_centerised$low <- relevel(df_centerised$low, ref="No") 
+df_centerised$race <- relevel(df_centerised$race, ref="White") 
+df_centerised$smoke <- relevel(df_centerised$smoke, ref="No") 
+
+model_logreg_2 <- glm(low ~ lwt + race + smoke + ui, data = df_centerised, family = "binomial")
+summary(model_logreg_2)
+
+coef_raceBrack <- model_logreg_2$coefficients[3]
+coef_smokeYes <- model_logreg_2$coefficients[5]
+standard_errors <- model_logreg_2$coefficients[, "Std. Error"]
+
+coef(model_logreg_2)
+?glm
+exp(coef_raceBrack + coef_smokeYes)
+
+
+# defien quartiles based on lwt
+df_centerised <- df_centerised %>%
+  mutate(lwt_quartile = ntile(lwt, 4),
+         low = (as.numeric(low) - 1))
+
+str(df_centerised)
+
+# Calculate mean probability of low birth weight in each quartile
+low_means <- df_centerised %>%
+  group_by(lwt_quartile) %>%
+  summarize(low_mean = mean(low))
+
+str(low_means)
+
+
+low_log_odds <- low_means %>%
+  mutate(low_log_odd = log(low_mean / (1 - low_mean)))
+
+lwt_medians <- df_centerised %>%
+  group_by(lwt_quartile) %>%
+  summarize(lwt_median = median(lwt))
+
+combined_data <- merge(low_log_odds, lwt_medians, by = "lwt_quartile")
+
+ggplot(combined_data, aes(x = lwt_median, y = low_log_odd)) +
+  geom_point() +
+  labs(x = "Median Probability of Low",
+       y = "Log-Odds",
+       title = "Relationship Between Median Probability and Log-Odds")
 
 ```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
